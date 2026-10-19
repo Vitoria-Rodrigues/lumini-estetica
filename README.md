@@ -2,7 +2,7 @@
 
 > [!NOTE]
 > **Project Creator:** Vitória Rodrigues Ferreira
-> **Tech Stack:** React.js, TypeScript, Supabase (PostgreSQL)
+> **Tech Stack:** React.js, TypeScript, Zod, Supabase (PostgreSQL)
 
 This repository contains the complete management system designed for aesthetic clinics.
 The platform centralizes all business-critical information in a single digital environment,
