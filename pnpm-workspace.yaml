@@ -40,6 +40,9 @@ catalog:
   'dotenv': ^18.0.4
 
 catalogs:
+  plugins-stack:
+    '@vitoria-rodrigues/agent-mesh': 'github:Vitoria-Rodrigues/agent-mesh'
+
   tooling-stack:
     '@docusaurus/eslint-plugin': '3.10.2'
     '@eslint/js': '10.0.1'

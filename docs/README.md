@@ -1,21 +1,32 @@
-# Lumini Estética - Docs Workspace
+# Lumini Estética - Docs Workspace (`@vitoria-rodrigues/lumini-docs`)
 
 > [!NOTE]
-> **Project Creator:** Vitória Rodrigues Ferreira
-> **Tech Stack:** Docusaurus, MDX, React.js
+> **Project Creator**: Vitória Rodrigues Ferreira
+> **Tech Stack**: Docusaurus 3.10, MDX v3, React 19, Tailwind CSS 4, Mermaid
 
-This workspace contains the unified documentation portal for the **Lumini Estética** management system. It provides a centralized, easily navigable environment for all technical documentation, architectural briefs, and system guides.
+This workspace contains the unified documentation portal for the **Lumini Estética** management system, structured according to the Diátaxis documentation framework.
 
-## Purpose
+---
 
-The primary goal of this workspace is to maintain high-quality, readable documentation that serves both human developers and AI agents. By utilizing Docusaurus and `.mdx` files, we ensure that the context remains highly structured and easily accessible.
+## 1. Documentation Taxonomy
 
-## Documentation Standards
+- **`tutorials/`**: Learning-oriented step-by-step onboarding guides.
+- **`how-to-guides/`**: Task-oriented operational recipes.
+- **`reference/`**: Technical schemas, specifications, and architectural catalogs.
+- **`explanation/`**: Architectural rationale and domain background.
 
-- **Language Policy:** All technical documentation within this portal MUST be written in Portuguese (pt-BR).
-- **Structure:** The documentation follows the Diátaxis framework, ensuring a clear separation between tutorials, how-to guides, reference material, and explanations.
+---
 
-## Development
+## 2. Building and Running
 
-- Start the development server: `npm run start`
-- Build the static site: `npm run build`
+Execute from the monorepo root using pnpm and Turborepo:
+
+| Command | Description |
+| :--- | :--- |
+| `pnpm docs:dev` | Starts the Docusaurus development server on port `3002`. |
+| `pnpm docs:build` | Runs `tsx scripts/docs-build.ts` to produce static documentation assets. |
+| `pnpm docs:typecheck` | Runs TypeScript validation (`tsc -b`). |
+| `pnpm docs:lint` | Runs ESLint and MDX v3 checks across documentation sources. |
+| `pnpm docs:down` | Frees port `3002` if a local server process remains active. |
+| `pnpm --filter "@vitoria-rodrigues/lumini-docs" generate:changelog` | Regenerates changelog artifacts. |
+| `pnpm --filter "@vitoria-rodrigues/lumini-docs" generate:roadmap` | Regenerates roadmap artifacts. |

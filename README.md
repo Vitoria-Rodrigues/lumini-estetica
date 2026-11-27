@@ -1,17 +1,60 @@
-# Lumini Estética
+# Lumini Estética (`@vitoria-rodrigues/lumini-estetica`)
 
 > [!NOTE]
-> **Project Creator:** Vitória Rodrigues Ferreira
-> **Tech Stack:** React.js, TypeScript, Zod, Supabase (PostgreSQL)
+> **Project Creator**: Vitória Rodrigues Ferreira
+> **Tech Stack**: React 19, TypeScript 6, Zod, TanStack Query, Docusaurus 3, Supabase (PostgreSQL), Stripe, Turborepo, pnpm
 
-This repository contains the complete management system designed for aesthetic clinics.
-The platform centralizes all business-critical information in a single digital environment,
-optimizing customer service, internal organization, and operational efficiency.
+This monorepo contains the complete management platform designed for aesthetic clinics. It centralizes client management, procedure catalogs, appointment scheduling, financial records, and technical documentation in a single Turborepo workspace.
 
-## Core Features and Roles
+---
 
-The platform centralizes all critical business information, facilitating control and
-decision-making.
+## 1. Architecture Overview
+
+```mermaid
+flowchart TD
+  Root["@vitoria-rodrigues/lumini-estetica
+  (Turborepo + pnpm strict catalogs)"] --> App["app/ (@vitoria-rodrigues/lumini-app)
+  React 19 + Vite 8 + Stripe"]
+  Root --> Docs["docs/ (@vitoria-rodrigues/lumini-docs)
+  Docusaurus 3 + MDX v3"]
+  Root --> Supabase["supabase/ (@vitoria-rodrigues/lumini-supabase)
+  PostgreSQL + RLS + Deno Edge Functions"]
+  App -->|Supabase JS + Auth| Supabase
+```
+
+### Workspace Structure
+
+```text
+Lumini-Estetica/
+├── .agents/
+│   └── plugins.json        # Antigravity plugin registry (@vitoria-rodrigues/agent-mesh)
+├── .github/                # CI/CD workflows (deploy-app, deploy-docs, deploy-supabase)
+├── app/                    # Frontend application (@vitoria-rodrigues/lumini-app)
+├── docs/                   # Docusaurus portal (@vitoria-rodrigues/lumini-docs)
+├── supabase/               # PostgreSQL migrations & Edge Functions (@vitoria-rodrigues/lumini-supabase)
+├── AGENTS.md               # Sovereign root context router (Layer 1)
+├── CODE_OF_CONDUCT.md
+├── LICENSE.md
+├── package.json            # Root monorepo manifest
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml     # Centralized pnpm strict catalogs
+├── README.md               # Primary developer documentation
+├── tsconfig.base.json
+├── tsconfig.json
+└── turbo.json
+```
+
+### Child Workspaces
+
+| Workspace | Package Name | Purpose | Documentation |
+| :--- | :--- | :--- | :--- |
+| `app/` | `@vitoria-rodrigues/lumini-app` | Clinic management React + Vite frontend | [app/README.md](./app/README.md) |
+| `docs/` | `@vitoria-rodrigues/lumini-docs` | Docusaurus technical documentation portal | [docs/README.md](./docs/README.md) |
+| `supabase/` | `@vitoria-rodrigues/lumini-supabase` | PostgreSQL schemas, RLS, and Deno Edge Functions | [supabase/README.md](./supabase/README.md) |
+
+---
+
+## 2. Core Features, Roles & Requirements
 
 ### Managed Entities
 
@@ -22,48 +65,76 @@ decision-making.
 
 ### Roles and Permissions
 
-- **Admin:** Full access to all system functions.
-- **Attendant:** Full access to Clients, read access to procedures, create and read access for
-  consultations, update and read access for the calendar agenda.
-- **Specialist:** Read access to procedures, read access to Clients, read access to the calendar
-  agenda, and read and confirm access for consultations.
+- **Admin**: Full access to all system functions.
+- **Attendant**: Full access to Clients, read access to procedures, create and read access for consultations, update and read access for the calendar agenda.
+- **Specialist**: Read access to procedures, read access to Clients, read access to the calendar agenda, and read and confirm access for consultations.
 
-## Functional Requirements (FR)
+### Functional Requirements (FR)
 
-- **FR01 - Client Registration:** The system must allow creating, reading, updating, and deleting
-  (CRUD) client records containing Name, CPF, Date of Birth, Observations, and Phone.
-- **FR02 - Employee Registration:** The system must allow CRUD operations for employees with Name,
-  CPF, Phone, Role, and Specialty.
-- **FR03 - Procedure Registration:** The system must allow CRUD operations for procedures with
-  Name, Description, Value, and Duration.
-- **FR04 - Category Management:** The system must allow classifying procedures into the categories
-  "Facial" or "Corporal".
-- **FR05 - Appointment Scheduling:** The system must allow creating and viewing consultations,
-  linking a Client, Employee, and Procedure to a specific Date/Time.
-- **FR06 - Observation Records:** The system must allow the employee to insert observations about
-  the patient before or after the consultation.
-- **FR07 - Agenda Status Control:** The system must allow updating the status of a consultation
-  (e.g., scheduled, performed, canceled).
-- **FR08 - Financial Records:** The system must store transaction details (value, payment method,
-  and status).
-- **FR09 - Profile Control (RBAC):** The system must restrict actions based on the logged-in
-  profile (Admin, Attendant, or Specialist), according to the defined permissions matrix.
+- **FR01 - Client Registration**: CRUD operations for client records containing Name, CPF, Date of Birth, Observations, and Phone.
+- **FR02 - Employee Registration**: CRUD operations for employees with Name, CPF, Phone, Role, and Specialty.
+- **FR03 - Procedure Registration**: CRUD operations for procedures with Name, Description, Value, and Duration.
+- **FR04 - Category Management**: Classification of procedures into `Facial` or `Corporal` categories.
+- **FR05 - Appointment Scheduling**: Creating and viewing consultations linking a Client, Employee, and Procedure to a specific Date/Time.
+- **FR06 - Observation Records**: Recording patient observations before or after a consultation.
+- **FR07 - Agenda Status Control**: Updating consultation lifecycle status (`scheduled`, `performed`, `canceled`).
+- **FR08 - Financial Records**: Storing transaction details (value, payment method, and status).
+- **FR09 - Profile Control (RBAC)**: Restricting actions based on the authenticated role (`Admin`, `Attendant`, or `Specialist`).
 
-## Non-Functional Requirements (NFR)
+### Non-Functional Requirements (NFR)
 
-- **NFR01 - Data Protection:** The system must encrypt sensitive data (such as CPF).
-- **NFR02 - Authentication:** System access must be protected by a unique login and password for
-  each user.
-- **NFR03 - Centralized Interface:** Following the system's core objective, the interface must be
-  intuitive, centralizing all information in a single digital environment to facilitate
-  decision-making.
-- **NFR04 - Referential Integrity:** The system must not allow the deletion of a "Procedure" or
-  "Client" that has a history of linked consultations (it must apply logical deletion/archiving
-  instead).
+- **NFR01 - Data Protection**: Sensitive fields (such as CPF) must be protected and encrypted.
+- **NFR02 - Authentication**: Access must require unique login credentials per user.
+- **NFR03 - Centralized Interface**: Intuitive, unified interface consolidating clinic operations.
+- **NFR04 - Referential Integrity**: Procedures or Clients with consultation history must use logical deletion/archiving rather than hard deletion.
 
-## Workspace Structure
+---
 
-- **[.agents/](./.agents/)**: AI agent skills, router contexts, and execution plans.
-- **[app/](./app/)**: The main application workspace containing the frontend and integrations.
-- **[docs/](./docs/)**: The unified Docusaurus documentation portal and technical guides.
-- **[supabase/](./supabase/)**: The independent backend infrastructure with database schemas and edge functions.
+## 3. Getting Started
+
+### Prerequisites
+
+- Node.js 20 or higher (CI targets Node.js 22)
+- pnpm 10 (`packageManager: pnpm@10.33.2`)
+
+### Installation
+
+```bash
+pnpm install
+```
+
+Configure environment variables in `app/` by copying [app/.env.example](./app/.env.example) to `app/.env` and filling in your Supabase and Stripe keys.
+
+---
+
+## 4. Pipeline Scripts
+
+| Command | Description |
+| :--- | :--- |
+| `pnpm app:dev` | Starts the `@vitoria-rodrigues/lumini-app` Vite development server. |
+| `pnpm app:build` | Builds `@vitoria-rodrigues/lumini-app` via Turborepo. |
+| `pnpm app:typecheck` | Runs TypeScript checks for `@vitoria-rodrigues/lumini-app`. |
+| `pnpm app:lint` | Runs ESLint for `@vitoria-rodrigues/lumini-app`. |
+| `pnpm docs:dev` | Starts the Docusaurus dev server on port `3002`. |
+| `pnpm docs:build` | Builds the `@vitoria-rodrigues/lumini-docs` static site. |
+| `pnpm docs:typecheck` | Runs TypeScript checks for `@vitoria-rodrigues/lumini-docs`. |
+| `pnpm docs:lint` | Runs ESLint for `@vitoria-rodrigues/lumini-docs`. |
+| `pnpm build` | Builds all workspaces via Turborepo. |
+| `pnpm lint` | Lints all workspaces via Turborepo. |
+| `pnpm typecheck` | Typechecks all workspaces via Turborepo. |
+| `pnpm format:check` | Verifies Prettier formatting across the repository. |
+
+---
+
+## 5. AI Agent Mesh Integration
+
+This repository consumes organizational AI agent skills, rules, and MCP configurations via `@vitoria-rodrigues/agent-mesh` declared in `catalog:plugins-stack` ([pnpm-workspace.yaml](./pnpm-workspace.yaml)) and mounted through [.agents/plugins.json](./.agents/plugins.json).
+
+---
+
+## 6. Governance Standards
+
+1. **Conventional Commits**: All commits must follow `<type>(<scope>): <description>` (v1.0.0).
+2. **Cryptographic Signing**: Sign commits with SSH (`git commit -S -m "..."`) when a signing key is configured.
+3. **Zero-Emoji Invariant**: Emojis are strictly prohibited in code, documentation, and commit messages.
+4. **Secret Hygiene**: Never commit plaintext credentials; mirror all `.env` keys in `.env.example`.
