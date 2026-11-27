@@ -21,7 +21,7 @@ jobs:
         uses: ./.github/actions/setup-pnpm-env
         with:
           node-version: 22
-          filter: '@lumini-estetica/app...'
+          filter: '@vitoria-rodrigues/lumini-app...'
 
       - name: Deploy to Vercel
         uses: ./.github/actions/deploy-vercel

@@ -1,24 +1,33 @@
-<context-hierarchy src="../AGENTS.md">
+<context-hierarchy>
+  <parent src="../AGENTS.md" type="global-rules" />
   <system-instruction>
-    Stop now and read the parent context file before proceeding with any actions in this directory.
+    AGENT: You are operating in the supabase bounded context (@vitoria-rodrigues/lumini-supabase) of Lumini-Estetica. If you have not read "../AGENTS.md" in this session, stop now and read it using your file-reading tools before proceeding.
   </system-instruction>
 </context-hierarchy>
 
-# Supabase Workspace Context
+# Supabase Workspace Context (`@vitoria-rodrigues/lumini-supabase`)
 
-This document serves as the bounded context router (Layer 2) for the `supabase/` workspace of the **Lumini Estética** project, created by **Vitória Rodrigues Ferreira**.
+This document serves as the bounded context router (Layer 2) for the `supabase/` backend workspace of **Lumini Estética**, created by Vitória Rodrigues Ferreira.
 
-## Purpose
+## Navigation
 
-To guide AI agents operating within the database and backend infrastructure, ensuring strict adherence to Supabase's ecosystem, PostgreSQL best practices, and Edge Functions architecture.
+- [README.md](./README.md): Database migrations, Deno Edge Functions, and Supabase CLI commands.
+- [package.json](./package.json): Workspace manifest (`@vitoria-rodrigues/lumini-supabase`) with `types:generate` script.
+
+## Architecture
+
+- **`migrations/`**: PostgreSQL schema definitions, foreign key constraints, and Row-Level Security (RLS) policies enforcing Admin, Attendant, and Specialist RBAC.
+- **`functions/`**: TypeScript Deno Edge Functions handling server-side business logic and Stripe payment lifecycle webhooks.
+- **`config.toml`**: Local Supabase CLI runtime configuration.
+
+## Scoped Guardrails
+
+- MUST align all database schemas, RLS policies, and Edge Functions with the business rules and data protection constraints in [../README.md](../README.md).
+- MUST protect sensitive client fields (such as CPF) and enforce logical deletion/archiving for `Client` and `Procedure` records with consultation history (NFR01, NFR04).
+- MUST regenerate TypeScript database types via `pnpm --filter @vitoria-rodrigues/lumini-supabase types:generate` whenever migrations change.
 
 ## Required Skills
 
-- `agent-router-expert`
-- `markdown-expert`
-
-## Guidelines
-
-- **Source of Truth:** All database schemas, migrations, and backend logic must align with the business rules, user definitions, and constraints specified in the root [README.md](../README.md).
-- **Technology Stack:** Exclusively utilize Supabase CLI, PostgreSQL for migrations, Deno for Edge Functions, and TypeScript for function development.
-- **Language Policy:** Technical documentation within this workspace MUST be written in Portuguese (pt-BR), as defined by the global language policy.
+- **`router-architect`**: Active when auditing bounded context alignment.
+- **`readme-architect`**: Active when updating [README.md](./README.md).
+- **`github-flow-operator`**: Active when maintaining [.github/workflows/deploy-supabase.yaml](../.github/workflows/deploy-supabase.yaml).
